@@ -16,27 +16,16 @@ export const authUser = asyncHandler(async (req, res) => {
 			email: email
 		}
 	})
-	if (!user) {
-		res.status(401)
-		throw new Error('такого логина нет')
-	}
+
 	const isValidPassword = await verify(user.password, password)
 
-	if (!isValidPassword) {
+	if (user && isValidPassword) {
+		const token = generateToken(user.id)
+		res.json({ user, token })
+	} else {
 		res.status(401)
-		throw new Error('неверный пароль')
+		throw new Error('Адрес электронной почты и пароль неверны.')
 	}
-	const token = generateToken(user.id)
-	res.json({ user, token })
-	// const isValidPassword = await verify(user.password, password)
-
-	// if (user && isValidPassword) {
-	// 	const token = generateToken(user.id)
-	// 	res.json({ user, token })
-	// } else {
-	// 	res.status(401)
-	// 	throw new Error('Адрес электронной почты и пароль неверны.')
-	// }
 })
 
 // @desc  Register user
