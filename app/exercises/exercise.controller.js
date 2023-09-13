@@ -17,43 +17,57 @@ export const createNewExercise = asyncHandler(async (req, res) => {
 	res.json(exercise)
 })
 
+// @desc    update exercises
+// @route   Put /api/exercises/:id
+// @access  Private
+
+export const updateExercise = asyncHandler(async (req, res) => {
+	const { name, times, iconPath } = req.body
+
+	try {
+		const updatedExercise = await prisma.exercise.update({
+			where: {
+				id: Number(req.params.id)
+			},
+			data: {
+				name: name,
+				times: times,
+				iconPath: iconPath
+			}
+		})
+		res.json(updatedExercise)
+	} catch (error) {
+		res.status(404)
+		throw new Error('Что то при обновлении пошло не так, возможно не найдено')
+	}
+})
+
 // @desc    Get exercises
 // @route   GET /api/exercises
 // @access  Private
 export const getExercises = asyncHandler(async (req, res) => {
-	const exercises = await prisma.exercise.findMany()
-	res.json(exercises)
-})
-
-// @desc    update exercises
-// @route   Update /api/exercises/:id
-// @access  Private
-
-export const updateExercises = asyncHandler(async (req, res) => {
-	const { name, times, iconPath } = req.body
-	const updatedExercise = await prisma.exercise.update({
-		where: {
-			id: 1
-		},
-		data: {
-			name: name,
-			times: times,
-			iconPath: iconPath
+	const exercises = await prisma.exercise.findMany({
+		orderBy: {
+			createdAt: 'desc'
 		}
 	})
-	res.json(updatedExercise)
+	res.json(exercises)
 })
 
 // @desc    Delete exercises
 // @route   Delete /api/exercises/:id
 // @access  Private
 
-export const deleteExercises = asyncHandler(async (req, res) => {
-	const { name, times, iconPath } = req.body
-	const deleteExercise = await prisma.exercise.delete({
-		where: {
-			id: 1
-		}
-	})
-	res.json('Упражнение удалено')
+export const deleteExercise = asyncHandler(async (req, res) => {
+	try {
+		const deleteExercise = await prisma.exercise.delete({
+			where: {
+				id: Number(req.params.id)
+			}
+		})
+		res.json({ message: 'Упражнение удалено' })
+	} catch (error) {
+		res.status(404)
+		throw new Error('возможно не чего удалять ')
+	}
 })

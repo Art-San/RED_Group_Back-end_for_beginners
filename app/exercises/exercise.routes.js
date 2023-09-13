@@ -4,9 +4,9 @@ import { protect } from '../middleware/auth.middleware.js'
 
 import {
 	createNewExercise,
-	deleteExercises,
+	deleteExercise,
 	getExercises,
-	updateExercises
+	updateExercise
 } from './exercise.controller.js'
 
 const router = express.Router()
@@ -15,7 +15,7 @@ router.route('/').post(protect, createNewExercise).get(protect, getExercises)
 
 router
 	.route('/:id')
-	.put(protect, updateExercises)
-	.delete(protect, deleteExercises)
+	.put(protect, updateExercise)
+	.delete(protect, deleteExercise)
 
 export default router
