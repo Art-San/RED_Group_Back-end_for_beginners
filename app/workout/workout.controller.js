@@ -1,4 +1,5 @@
 import asyncHandler from 'express-async-handler'
+import 'colors'
 
 import { prisma } from '../prisma.js'
 
@@ -23,6 +24,7 @@ export const getWorkouts = asyncHandler(async (req, res) => {
 // @route   GET /api/workouts/:id
 // @access  Private
 export const getWorkout = asyncHandler(async (req, res) => {
+	console.log('+req.params.id'.red, +req.params.id)
 	const workout = await prisma.workout.findUnique({
 		where: { id: +req.params.id },
 		include: {
@@ -32,7 +34,7 @@ export const getWorkout = asyncHandler(async (req, res) => {
 
 	if (!workout) {
 		res.status(404)
-		throw new Error('Workout not found!')
+		throw new Error('Workout не найден !')
 	}
 
 	const minutes = Math.ceil(workout.exercises.length * 3.7)
@@ -42,7 +44,7 @@ export const getWorkout = asyncHandler(async (req, res) => {
 
 // @desc    Create new workout
 // @route 	POST /api/workouts
-// @access  Private
+// @access  приватный путь
 export const createNewWorkout = asyncHandler(async (req, res) => {
 	const { name, exerciseIds } = req.body
 
